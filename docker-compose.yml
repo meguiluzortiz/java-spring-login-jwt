@@ -1,0 +1,13 @@
+version: "3.7"
+
+services:
+  main:
+    container_name: main
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+      - "5005:5005" # debug port
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,address=5005,server=y,suspend=n

@@ -1,0 +1,21 @@
+@hostname = localhost
+@port = 8080
+@host = http://{{hostname}}:{{port}}/api
+@contentType = application/json
+
+### login
+# @name login
+POST {{host}}/auth/login
+Content-Type: {{contentType}}
+
+{
+    "username": "test",
+    "password": "test"
+}
+
+@authToken = {{login.response.body.jwt}}
+
+### home
+GET {{host}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
