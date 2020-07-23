@@ -1,9 +1,9 @@
 package com.example.springjwtlogin.web.security;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -13,6 +13,7 @@ import com.example.springjwtlogin.security.JwtUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,18 +22,18 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
-import mockit.Mock;
-import mockit.MockUp;
 
 @ExtendWith(MockitoExtension.class)
 class JwtUtilsTest {
 
     final String mockJwtToken = "jwtToken";
     JwtUtils jwtUtils;
+
+    @Mock
+    JwtUtils mockJwtUtils;
 
     @BeforeEach
     void setUp() {
@@ -69,9 +70,10 @@ class JwtUtilsTest {
         JwtParser mockParser = mock(JwtParser.class);
         when(mockParser.parseClaimsJws(mockJwtToken)).thenReturn(mockJwsClaims);
 
-        this.mockJwtsParser(mockParser);
+        when(mockJwtUtils.getParser()).thenReturn(mockParser);
+        when(mockJwtUtils.getUserNameFromJwtToken(mockJwtToken)).thenCallRealMethod();
 
-        String username = jwtUtils.getUserNameFromJwtToken(mockJwtToken);
+        String username = mockJwtUtils.getUserNameFromJwtToken(mockJwtToken);
         assertThat(username, notNullValue());
         assertThat(username, is(mockUsername));
     }
@@ -81,9 +83,10 @@ class JwtUtilsTest {
         JwtParser mockParser = mock(JwtParser.class);
         when(mockParser.parseClaimsJws(mockJwtToken)).thenReturn(null);
 
-        this.mockJwtsParser(mockParser);
+        when(mockJwtUtils.getParser()).thenReturn(mockParser);
+        when(mockJwtUtils.validateJwtToken(mockJwtToken)).thenCallRealMethod();
 
-        boolean validation = jwtUtils.validateJwtToken(mockJwtToken);
+        boolean validation = mockJwtUtils.validateJwtToken(mockJwtToken);
         assertThat(validation, notNullValue());
         assertThat(validation, equalTo(true));
     }
@@ -93,9 +96,10 @@ class JwtUtilsTest {
         JwtParser mockParser = mock(JwtParser.class);
         when(mockParser.parseClaimsJws(mockJwtToken)).thenThrow(SignatureException.class);
 
-        this.mockJwtsParser(mockParser);
+        when(mockJwtUtils.getParser()).thenReturn(mockParser);
+        when(mockJwtUtils.validateJwtToken(mockJwtToken)).thenCallRealMethod();
 
-        boolean validation = jwtUtils.validateJwtToken(mockJwtToken);
+        boolean validation = mockJwtUtils.validateJwtToken(mockJwtToken);
         assertThat(validation, notNullValue());
         assertThat(validation, equalTo(false));
     }
@@ -105,9 +109,10 @@ class JwtUtilsTest {
         JwtParser mockParser = mock(JwtParser.class);
         when(mockParser.parseClaimsJws(mockJwtToken)).thenThrow(MalformedJwtException.class);
 
-        this.mockJwtsParser(mockParser);
+        when(mockJwtUtils.getParser()).thenReturn(mockParser);
+        when(mockJwtUtils.validateJwtToken(mockJwtToken)).thenCallRealMethod();
 
-        boolean validation = jwtUtils.validateJwtToken(mockJwtToken);
+        boolean validation = mockJwtUtils.validateJwtToken(mockJwtToken);
         assertThat(validation, notNullValue());
         assertThat(validation, equalTo(false));
     }
@@ -117,9 +122,10 @@ class JwtUtilsTest {
         JwtParser mockParser = mock(JwtParser.class);
         when(mockParser.parseClaimsJws(mockJwtToken)).thenThrow(ExpiredJwtException.class);
 
-        this.mockJwtsParser(mockParser);
+        when(mockJwtUtils.getParser()).thenReturn(mockParser);
+        when(mockJwtUtils.validateJwtToken(mockJwtToken)).thenCallRealMethod();
 
-        boolean validation = jwtUtils.validateJwtToken(mockJwtToken);
+        boolean validation = mockJwtUtils.validateJwtToken(mockJwtToken);
         assertThat(validation, notNullValue());
         assertThat(validation, equalTo(false));
     }
@@ -129,9 +135,10 @@ class JwtUtilsTest {
         JwtParser mockParser = mock(JwtParser.class);
         when(mockParser.parseClaimsJws(mockJwtToken)).thenThrow(UnsupportedJwtException.class);
 
-        this.mockJwtsParser(mockParser);
+        when(mockJwtUtils.getParser()).thenReturn(mockParser);
+        when(mockJwtUtils.validateJwtToken(mockJwtToken)).thenCallRealMethod();
 
-        boolean validation = jwtUtils.validateJwtToken(mockJwtToken);
+        boolean validation = mockJwtUtils.validateJwtToken(mockJwtToken);
         assertThat(validation, notNullValue());
         assertThat(validation, equalTo(false));
     }
@@ -141,20 +148,18 @@ class JwtUtilsTest {
         JwtParser mockParser = mock(JwtParser.class);
         when(mockParser.parseClaimsJws(mockJwtToken)).thenThrow(IllegalArgumentException.class);
 
-        this.mockJwtsParser(mockParser);
+        when(mockJwtUtils.getParser()).thenReturn(mockParser);
+        when(mockJwtUtils.validateJwtToken(mockJwtToken)).thenCallRealMethod();
 
-        boolean validation = jwtUtils.validateJwtToken(mockJwtToken);
+        boolean validation = mockJwtUtils.validateJwtToken(mockJwtToken);
         assertThat(validation, notNullValue());
         assertThat(validation, equalTo(false));
     }
 
-    private void mockJwtsParser(JwtParser jwtParser) {
-        new MockUp<Jwts>() {
-            @Mock
-            public JwtParser parser() {
-                return jwtParser;
-            }
-        };
+    @Test
+    void shouldReturnParserWhenCalled(){
+        JwtParser parser = jwtUtils.getParser();
+        assertThat(parser, notNullValue());
     }
 
 }

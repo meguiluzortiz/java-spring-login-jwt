@@ -13,7 +13,7 @@
   <name>java-spring-login-jwt</name>
   <description>My cool spring boot project.</description>
   <properties>
-    <java.version>1.8</java.version>
+    <java.version>11</java.version>
   </properties>
   <dependencies>
     <dependency>
@@ -56,12 +56,6 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.jmockit</groupId>
-      <artifactId>jmockit</artifactId>
-      <version>1.24</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-test</artifactId>
       <scope>test</scope>
@@ -76,7 +70,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.22.2</version>
         <configuration>
           <reuseForks>false</reuseForks>
           <forkCount>1</forkCount>
@@ -105,7 +98,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-pmd-plugin</artifactId>
-            <version>3.10.0</version>
+            <version>3.13.0</version>
             <executions>
               <execution>
                 <id>pmd</id>
@@ -164,7 +157,7 @@
         <activeByDefault>true</activeByDefault>
       </activation>
       <properties>
-        <jacoco.version>0.8.5</jacoco.version>
+        <jacoco.version>0.8.3</jacoco.version>
       </properties>
       <build>
         <plugins>
