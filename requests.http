@@ -1,6 +1,6 @@
 @hostname = localhost
 @port = 8080
-@host = http://{{hostname}}:{{port}}/api
+@host = http://secure-gorge-62437.herokuapp.com/api
 @contentType = application/json
 
 ### login
