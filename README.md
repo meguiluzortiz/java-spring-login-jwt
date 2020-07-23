@@ -19,6 +19,7 @@ make debug         #run the app in debug mode
 - JUnit, Mockito and Jacoco
 - Static Analysis (PMD, SpotBugs)
 - Sonarqube, Sonarcloud
+- Heroku
 
 ## To do list
 
